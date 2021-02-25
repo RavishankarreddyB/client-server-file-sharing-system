@@ -1,8 +1,10 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <netinet/in.h>
 #include <string.h>
 
 #include "socket.h"
+#include "header.h"
 
 #define PORT 8080
 #define BUFFERLENGTHFORLISTENING 4
@@ -26,6 +28,13 @@ int main() {
 
 	recv(newSocketId, buff, 1024, 0);
 	printf("received this message from client:- '%s'\n", buff);
+
+	if(checkFileExistence(buff) == 1) {
+		FILE *fp = fopen(buff, "r");
+		printf("sending the contents of file %s\n", buff);
+		bzero(buff, 1024);
+		readFromFileAndSendData(fp, buff, 1024, newSocketId);
+	}
 	
 	closeSocket(sockid);
 	return 0;

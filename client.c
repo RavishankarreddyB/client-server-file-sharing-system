@@ -17,11 +17,18 @@ int main() {
 
 	connectToSocket(sockid, addr);
 	
-	char *msg = "hello from client", buff[1024]={0};
-	send(sockid, msg, strlen(msg), 0);	
+	char buff[1024]={0};
+	
+	printf("enter the filename:\n");
+	fgets(buff, 1024, stdin);
+	printf("file name reqeusting is %s\n", buff);
+	send(sockid, buff, strlen(buff)-1, 0); // \n is stored at the buff by fgets. so effective length is len-1	
 
 	recv(sockid, buff, 1024, 0);
 	printf("received this message from server:- '%s'\n", buff);
+
+	FILE *fp = fopen("dummy_file", "w");
+	receiveDataAndWriteToFile(fp, buff, 1024, sockid);
 
         closeSocket(sockid);
         return 0;
