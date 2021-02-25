@@ -61,3 +61,20 @@ void closeSocket(int sockid) {
 	printf("closing the socket %d\n", sockid);
 	close(sockid);
 }
+
+void readFromFileAndSendData(FILE *fp, char* buff, int size, int sockid) {
+        while(fgets(buff, size, fp) != NULL) {
+		send(sockid, buff, size, 0);
+		bzero(buff, size);
+	}
+}
+
+void receiveDataAndWriteToFile(FILE *fp, char* buff, int size, int sockid) {
+	while(1) {
+		bzero(buff, size);
+		int n=recv(sockid, buff, size, 0);
+		if(n<=0)
+			break;
+		fprintf(fp, "%s", buff);
+	}
+}
