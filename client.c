@@ -31,7 +31,11 @@ int main() {
 	recv(sockid, buff, 1024, 0);
 	printf("received this message from server:- '%s'\n", buff);
 
-	FILE *fp = fopen(fileName, "w");
+	// to get the file name in the format "copy_fileName"	
+	char copy_fn[1024] = "copy_";
+	strcat(copy_fn, fileName);
+
+	FILE *fp = fopen(copy_fn, "w");
 	receiveDataAndWriteToFile(fp, buff, 1024, sockid);
 
         closeSocket(sockid);
