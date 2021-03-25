@@ -17,17 +17,21 @@ int main() {
 
 	connectToSocket(sockid, addr);
 	
-	char buff[1024]={0};
+	char buff[1024]={0}, fileName[1024]={0};
 	
 	printf("enter the filename:\n");
-	fgets(buff, 1024, stdin);
-	printf("file name reqeusting is %s\n", buff);
-	send(sockid, buff, strlen(buff)-1, 0); // \n is stored at the buff by fgets. so effective length is len-1	
+	fgets(fileName, 1024, stdin);
+	
+	// fgets adds \n at the end of input string. So the below line removes it.	
+	fileName[strcspn(fileName, "\n")]=0;
+
+	printf("file name reqeusting is %s\n", fileName);
+	send(sockid, fileName, strlen(fileName), 0);	
 
 	recv(sockid, buff, 1024, 0);
 	printf("received this message from server:- '%s'\n", buff);
 
-	FILE *fp = fopen("dummy_file", "w");
+	FILE *fp = fopen(fileName, "w");
 	receiveDataAndWriteToFile(fp, buff, 1024, sockid);
 
         closeSocket(sockid);

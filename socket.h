@@ -63,18 +63,46 @@ void closeSocket(int sockid) {
 }
 
 void readFromFileAndSendData(FILE *fp, char* buff, int size, int sockid) {
+	/*
+	int i=0;
         while(fgets(buff, size, fp) != NULL) {
 		send(sockid, buff, size, 0);
+		printf("seg %d is sent\n", i++);
 		bzero(buff, size);
+	}
+	*/
+	while(1) {
+		ssize_t bytesRead = fread(buff, 1, sizeof(buff), fp);
+               if (bytesRead <= 0) break;  // EOF
+
+               printf("Read %i bytes from file, sending them to network...\n", (int)bytesRead);
+               if (send(sockid, buff, bytesRead, 0) == -1)
+               {
+                  perror("send");
+                  break;
+               }
 	}
 }
 
 void receiveDataAndWriteToFile(FILE *fp, char* buff, int size, int sockid) {
 	while(1) {
-		bzero(buff, size);
+		/*
+		//bzero(buff, size);
 		int n=recv(sockid, buff, size, 0);
 		if(n<=0)
 			break;
 		fprintf(fp, "%s", buff);
+		*/
+		char buf[1024];
+		ssize_t bytesReceived = recv(sockid, buf, sizeof(buf), 0);
+		if (bytesReceived < 0) perror("recv");  // network error?
+		if (bytesReceived == 0) break;   // sender closed connection, must be end of file
+
+		printf("Received %i bytes from network, writing them to file...\n", (int) bytesReceived);
+		if (fwrite(buf, 1, bytesReceived, fp) != (size_t) bytesReceived)
+		{
+			perror("fwrite");
+			break;
+		}
 	}
 }
