@@ -21,8 +21,15 @@ int main() {
 	
 	listenSocket(sockid, BUFFERLENGTHFORLISTENING);
 	
-	int newSocketId = acceptSocketReq(sockid, addr);
-
+//	int newSocketId = acceptSocketReq(sockid, addr);
+	
+	int addrSize = sizeof(addr);
+        int newSocketId = accept(sockid, (struct sockaddr *) &addr, (socklen_t *)&addrSize);
+	if(newSocketId == -1)
+                printf("some problem connecting to client\n");
+        else
+                printf("connected to client and new socket id is %d\n", newSocketId);
+	
 	char *msg = "hello from server", buff[1024]={0};
 	send(newSocketId, msg, strlen(msg), 0);
 
@@ -33,7 +40,7 @@ int main() {
 		FILE *fp = fopen(buff, "r");
 		printf("sending the contents of file %s\n", buff);
 		bzero(buff, 1024);
-		readFromFileAndSendData(fp, buff, 1024, newSocketId);
+		readFromFileAndSendData(fp, buff, newSocketId);
 	}
 	
 	closeSocket(sockid);

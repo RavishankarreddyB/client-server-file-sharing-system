@@ -13,7 +13,7 @@ int main() {
         struct sockaddr_in addr;
         addr.sin_family = AF_INET;
         addr.sin_port = htons(PORT);
-	addr.sin_addr.s_addr = inet_addr("127.0.0.1");        
+	addr.sin_addr.s_addr = inet_addr("127.0.0.1"); // inet_addr - used to convert ip address to long format.        
 
 	connectToSocket(sockid, addr);
 	
@@ -36,7 +36,7 @@ int main() {
 	strcat(copy_fn, fileName);
 
 	FILE *fp = fopen(copy_fn, "w");
-	receiveDataAndWriteToFile(fp, buff, 1024, sockid);
+	receiveDataAndWriteToFile(fp, sockid);
 
         closeSocket(sockid);
         return 0;

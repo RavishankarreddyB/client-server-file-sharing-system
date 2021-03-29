@@ -62,7 +62,7 @@ void closeSocket(int sockid) {
 	close(sockid);
 }
 
-void readFromFileAndSendData(FILE *fp, char* buff, int size, int sockid) {
+void readFromFileAndSendData(FILE *fp, char* buff, int sockid) {
 	/*
 	int i=0;
         while(fgets(buff, size, fp) != NULL) {
@@ -84,7 +84,7 @@ void readFromFileAndSendData(FILE *fp, char* buff, int size, int sockid) {
 	}
 }
 
-void receiveDataAndWriteToFile(FILE *fp, char* buff, int size, int sockid) {
+void receiveDataAndWriteToFile(FILE *fp, int sockid) {
 	while(1) {
 		/*
 		//bzero(buff, size);
